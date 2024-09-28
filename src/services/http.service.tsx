@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../config/axios.config";
+
 abstract class HttpService {
     private headers = {};
     private params = {};
@@ -64,11 +65,10 @@ abstract class HttpService {
         } catch (error) {
             console.error('Get Request Error', error)
             throw error
-
         }
     }
 
-    putRequest = async(url: string, data: any = {}, config: any = null) => {
+    putRequest = async (url: string, data: any = {}, config: any = null) => {
         try {
             this.getHeaders(config);
             const response = await axiosInstance.put(url, data, {

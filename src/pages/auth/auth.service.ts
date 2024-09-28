@@ -14,8 +14,6 @@ class AuthService extends HttpService {
         });
         return registrationDTO;
     }
-
-
 }
 const authService = new AuthService();
 export default authService;

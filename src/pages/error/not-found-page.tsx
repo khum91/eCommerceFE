@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 
-export function ErrorPage({ url = '/', redirectedText="Go Back" }: { url: string, redirectedText:string }) {
+export function ErrorPage({ url = '/', redirectedText = "Go Back" }: { url: string, redirectedText: string }) {
     return (
         <div className="grid h-screen place-content-center bg-white px-4">
             <div className="text-center">

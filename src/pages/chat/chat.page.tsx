@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react"
-import { toast } from "react-toastify";
-import { Card, Avatar } from 'flowbite-react';
-import chatService from "./chat.service";
+import { Avatar, Card } from 'flowbite-react';
+import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import socket from "../../config/socket.config";
+import chatService from "./chat.service";
 
 export const ChatUser = ({ user, clickEvent, isActive = false }: { user: SingleUser, clickEvent: any, isActive: boolean }) => {
     return (<>
         <div className={`inline-flex items-center gap-1 py-1 shadow-lg ${isActive ? 'bg-green-100' : ' bg-gray-100'} hover:bg-blue-300 hover:cursor-pointer`} onClick={(e) => { clickEvent(user._id) }}>
             <div className="w-1/4 mx-3">
-                <img src={user.image ? import.meta.env.VITE_IMAGE_URL + '/user/' + user.image : 'https://placehold.co/400'} className="rounded-full" alt="" />
+                <img src={user.image ? import.meta.env.VITE_IMAGE_URL + '/users/' + user.image : 'https://placehold.co/400'} className="rounded-full" alt="" />
             </div>
             <div>
                 <h1 className="bold">{user.name}</h1>
@@ -45,12 +45,11 @@ export interface SingleUser {
 }
 
 const ChatListView = () => {
-
     const [userList, setUserList] = useState<SingleUser[]>();
-
     const [currentChat, setCurrentChat] = useState<any>()
-
     const [message, setCurrentMessage] = useState<string>('');
+    const [hide, setHide] = useState<boolean>(true);
+    const divRef = useRef<HTMLDivElement | null>(null);
 
     const currentUser = useSelector((root: any) => {
         return root.auth.loggedInUser || null;
@@ -64,6 +63,12 @@ const ChatListView = () => {
             toast.error('Error loading user list.')
         }
     }
+    useEffect(() => {
+        // Automatically scroll to the bottom whenever messages change
+        if (divRef.current) {
+            divRef.current.scrollTop = divRef.current.scrollHeight;
+        }
+    });
     useEffect(() => {
         loadAllUsers()
         const newMessageReceived = (data: any) => {
@@ -91,7 +96,7 @@ const ChatListView = () => {
                 ...currentChat,
                 list: [
                     ...currentChat.list,
-                    response.result
+                    ...response.result
                 ]
             })
             socket.emit('message-sent', { sender: currentUser._id, receiver: currentChat.sender._id })
@@ -105,7 +110,7 @@ const ChatListView = () => {
             socket.connect()
             const response: any = await chatService.getRequest('/chat/chat-detail/' + senderId, { auth: true })
             setCurrentChat(response.result)
-
+            setHide(false)
         } catch (exception) {
             toast.error('Error loading chat detail.')
         }
@@ -120,16 +125,12 @@ const ChatListView = () => {
                     ))
                 }
             </div>
-            <div className="w-3/4 ">
+            <div className="w-3/4" hidden={hide}>
                 <Card >
-                    <div className="h-96 overflow-scroll overscroll-none">
+                    <div className="h-96  overflow-y-scroll" ref={divRef}>
                         {currentChat && currentChat.list.map((message: any, index: number) => (
-                            <div key={index} className={`flex items-start mb-4 ${message?.sender?._id === currentUser._id ? 'justify-end' : 'justify-start'}`}>
+                            <div key={index} className={` flex items-start mb-4 ${message?.sender?._id === currentUser._id ? 'justify-end' : 'justify-start'}`}>
                                 <Avatar img={message.sernderAvatar} rounded={true} className="ml-2" />
-                                {/* {
-                                    message?.sender?._id !== currentUser._id && (
-                                        <Avatar img={message.sernderAvatar} rounded={true} className="mr-2" />)
-                                } */}
                                 <div className={`rounded-lg px-4 py-2 ${message?.sender?._id === currentUser._id ? 'bg-blue-200 text-white' :
                                     'bg-gray-200 text-gray-900'}max-w-xs`}>
                                     <p>{message.message}</p>
@@ -137,9 +138,6 @@ const ChatListView = () => {
                                         {new Date(message.date).toLocaleTimeString()}
                                     </small>
                                 </div>
-                                {/* {message?.sender?._id === currentUser._id && (
-                                    <Avatar img={message.sernderAvatar} rounded={true} className="ml-2" />)
-                                } */}
                             </div>
                         ))
                         }

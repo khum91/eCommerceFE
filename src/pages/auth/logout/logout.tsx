@@ -1,5 +1,5 @@
 import Swal from "sweetalert2";
-import { toast } from "react-toastify";
+import { errorNotice, successNotice } from "../../../utilities/notification";
 import authService from "../auth.service";
 
 const logOut = async () => {
@@ -18,21 +18,13 @@ const logOut = async () => {
                 await authService.deleteRequest('/auth/logout/', { auth: true },)
                 localStorage.removeItem('at');
                 localStorage.removeItem('rt')
-                Swal.fire({
-                    title: "Logged Out!",
-                    text: "You have been disconnetced",
-                    icon: "success"
-                });
-                toast.success('Log out successfully.')
-
+                successNotice('Log out successfully.')
+                window.location.reload();
             } catch (exception) {
-                console.log(exception)
-                toast.error('Can not be logged out.')
+                errorNotice('Can not be logged out.')
             }
-
         }
     } catch (error) {
-
     }
 }
 export default logOut;

@@ -2,9 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import authService from "../pages/auth/auth.service";
 import LoadingComponent from "../components/common/loading/loading.component";
 
-
 let AuthContext = createContext({});
-
 export const AuthProvider = ({ children }: { children: any }) => {
 
     let [loggedInUser, setLoggedInUser] = useState();
@@ -19,15 +17,10 @@ export const AuthProvider = ({ children }: { children: any }) => {
         } catch (error: any) {
             if (+error.status === 401) {
                 if (error.data.message === 'jwt expired') {
-
-
                 }
                 localStorage.removeItem('at')
                 localStorage.removeItem('rt')
-
             }
-
-            console.log(error)
             setLoading(false)
         }
     }

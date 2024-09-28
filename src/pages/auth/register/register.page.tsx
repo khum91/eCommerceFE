@@ -38,7 +38,6 @@ export function RegisterUser() {
             toast.success(response.message)
             navigate('/')
         } catch (error: any) {
-            console.log(error);
             if (+error.status === 422) {
                 Object.keys(error.data.result).map((field: any) => {
                     setError(field, { message: error.data.result[field] });

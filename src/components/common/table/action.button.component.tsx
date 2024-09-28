@@ -5,9 +5,6 @@ import { NavLink } from "react-router-dom";
 
 
 const TableActionButton = ({ deleteAction, id, editUrl }: { deleteAction: any, id: string, editUrl:string }) => {
-
-
-
     const handleDelete = async (e: any) => {
         e.preventDefault();
         try {
@@ -22,11 +19,6 @@ const TableActionButton = ({ deleteAction, id, editUrl }: { deleteAction: any, i
             })
             if (result.isConfirmed) {
                 deleteAction(id)
-                Swal.fire({
-                    title: "Deleted!",
-                    text: "Your file has been deleted.",
-                    icon: "success"
-                });
             }
         } catch (error) {
 

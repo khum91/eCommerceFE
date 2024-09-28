@@ -14,6 +14,7 @@ export interface ITextInputComponent {
     control: any,
     defaultValue?: string,
     msg?: string | undefined | null
+    disable?:boolean
 }
 
 export interface IFileInputComponent {
@@ -29,10 +30,20 @@ export interface SelectOption {
 }
 
 export interface ISelectProps {
-    options: Array<SelectOption>,
+    options: any,
     name: string,
     control: any,
     msg?: string | undefined | null,
     defaultValue?: string,
     multiple?: boolean
+}
+
+export interface dSelectProps {
+    label: string,
+    options: any,
+    name: string,
+    control: any,
+    msg?: string | undefined | null,
+    defaultValue?: string,
+    disabled?: boolean | false
 }
